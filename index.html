@@ -277,7 +277,7 @@
         // letter.appendChild(watermark);
 
         const canvas = await html2canvas(letter, { scale: 3, useCORS: true });
-        watermark.remove();
+        // watermark.remove();
         icons.forEach(icon => icon.style.display = "inline");
 
         const link = document.createElement("a");
