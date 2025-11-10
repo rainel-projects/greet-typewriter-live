@@ -263,18 +263,18 @@
 
         // const watermark = document.createElement("div");
         // watermark.innerText = "🤍";
-        Object.assign(watermark.style, {
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          fontFamily: "Playfair Display",
-          fontSize: "280px",
-          color: "rgba(255,255,255,0.07)",
-          pointerEvents: "none",
-          zIndex: "0"
-        });
-        letter.appendChild(watermark);
+        // Object.assign(watermark.style, {
+        //   position: "absolute",
+        //   top: "50%",
+        //   left: "50%",
+        //   transform: "translate(-50%, -50%)",
+        //   fontFamily: "Playfair Display",
+        //   fontSize: "280px",
+        //   color: "rgba(255,255,255,0.07)",
+        //   pointerEvents: "none",
+        //   zIndex: "0"
+        // });
+        // letter.appendChild(watermark);
 
         const canvas = await html2canvas(letter, { scale: 3, useCORS: true });
         watermark.remove();
