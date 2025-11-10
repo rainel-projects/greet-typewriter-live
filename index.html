@@ -3,56 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Typewriter — Greeting Letter Edition</title>
+  <title>Typewriter — Celestial Letter Edition</title>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     :root {
-      --emerald-green: #284139;
-      --wasabi: #809076;
-      --creased-khaki: #F8D794;
-      --egyptian-earth: #BB6830;
-      --noir-de-vigne: #111A19;
-
-      --text: var(--noir-de-vigne);
-      --paper: var(--creased-khaki);
-      --bg-gradient: linear-gradient(180deg, #284139 0%, #809076 100%);
-      --accent: var(--egyptian-earth);
+      --text: #f8f5ee;
+      --accent: #f0d48a;
       --shadow-elevate: 0 4px 0 rgba(0,0,0,0.1), 0 6px 14px rgba(0,0,0,0.15);
+      --bg-gradient: radial-gradient(circle at top, #0a0f12 0%, #111A19 100%);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: var(--bg-gradient);
       font-family: "Lora", serif;
       color: var(--text);
       line-height: 1.8;
+      background: var(--bg-gradient);
       padding: 2rem;
       min-height: 100vh;
-      animation: fadeIn 0.6s ease;
       background-attachment: fixed;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      animation: pageIn 0.7s ease 0.2s forwards;
-      opacity: 0;
-    }
-
-    @keyframes pageIn { to { opacity: 1; } }
 
     header.site-header {
       display: flex;
@@ -70,7 +57,7 @@
       background: var(--accent);
       display: grid;
       place-items: center;
-      color: #fff;
+      color: #111;
       font-family: "Playfair Display";
       font-size: 24px;
       font-weight: 700;
@@ -84,7 +71,7 @@
     .control-btn {
       background: var(--accent);
       border: none;
-      color: #fffaf2;
+      color: #111;
       font-weight: 600;
       padding: .5rem .9rem;
       cursor: pointer;
@@ -93,29 +80,32 @@
       box-shadow: var(--shadow-elevate);
       transition: transform .15s ease, background .25s ease;
     }
-    .control-btn:hover { transform: translateY(-2px); background: var(--wasabi); }
+    .control-btn:hover { transform: translateY(-2px); background: #809076; }
+
+    .letter-frame {
+      position: relative;
+      background: url("./bg.png") center/cover no-repeat; /* ✅ Local background */
+      border-radius: 8px;
+      padding: 4rem 3rem;
+      box-shadow: var(--shadow-elevate);
+      overflow: hidden;
+      min-height: 900px;
+    }
 
     article.reader {
-      background: var(--paper);
-      box-shadow: var(--shadow-elevate);
-      border: 1px solid rgba(0,0,0,0.08);
-      padding: 2rem 2.3rem;
-      border-radius: 6px;
-      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-      background-size: 6px 6px;
       position: relative;
-      overflow: hidden;
+      z-index: 2;
     }
 
     h1,h2 {
       font-family: "Playfair Display";
       font-weight: 600;
-      color: var(--noir-de-vigne);
+      color: var(--accent);
     }
 
     h1 { font-size: 2.3rem; margin-bottom: 1rem; }
-    h2 { font-size: 1.5rem; margin-top: 1.8rem; color: var(--emerald-green); }
-    p { font-family: "Lora"; font-size: 1.08rem; margin: .8rem 0; }
+    h2 { font-size: 1.5rem; margin-top: 1.8rem; }
+    p { font-family: "Lora"; font-size: 1.08rem; margin: .8rem 0; color: #fffbe8; }
 
     .edit-icon {
       width: 18px; height: 18px; cursor: pointer;
@@ -125,15 +115,17 @@
     .edit-icon:hover { opacity: 1; }
 
     .editable[contenteditable="true"] {
-      outline: 2px dashed var(--wasabi);
-      background: rgba(255,240,180,0.2);
+      outline: 2px dashed rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
       transition: background 0.25s ease;
+      border-radius: 4px;
     }
 
     .crud-actions {
       margin-top: 1.6rem;
       display: flex;
       gap: .8rem;
+      justify-content: center;
     }
 
     .crud-btn {
@@ -147,8 +139,8 @@
       transition: transform .15s ease;
     }
 
-    .add { background: var(--accent); color: #fffaf2; }
-    .delete { background: var(--wasabi); color: #fffaf2; }
+    .add { background: var(--accent); color: #111; }
+    .delete { background: #809076; color: #fffaf2; }
     .crud-btn:hover { transform: translateY(-2px); }
 
     .toast {
@@ -156,7 +148,7 @@
       bottom: 20px;
       right: 20px;
       background: var(--accent);
-      color: #fffaf2;
+      color: #111;
       padding: .6rem 1.2rem;
       box-shadow: var(--shadow-elevate);
       font-family: "Lora";
@@ -171,35 +163,38 @@
 </head>
 
 <body>
-  <div class="page" id="page">
+  <div class="page">
     <header class="site-header">
       <div class="brand" style="display:flex;align-items:center;gap:.8rem;">
         <div class="logo">T</div>
         <div>
           <div class="site-title">Typewriter</div>
-          <div class="muted">Greeting Letter Edition</div>
+          <div class="muted">Celestial Letter Edition</div>
         </div>
       </div>
       <div class="controls">
         <button id="saveBtn" class="control-btn">Save</button>
-        <button id="exportBtn" class="control-btn">Export Card</button>
+        <button id="exportBtn" class="control-btn">Export Letter</button>
       </div>
     </header>
 
-    <article class="reader" id="article">
-      <h1 id="title" class="editable">
-        Dear Friend,
-        <svg class="edit-icon" viewBox="0 0 24 24" onclick="makeEditable('title')">
-          <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
-        </svg>
-      </h1>
-      <p id="para1" class="editable">
-        Wishing you warmth, joy, and sunshine on this beautiful day. May every word you read here carry a bit of peace to your heart.
-        <svg class="edit-icon" viewBox="0 0 24 24" onclick="makeEditable('para1')">
-          <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
-        </svg>
-      </p>
-    </article>
+    <div class="letter-frame" id="letterFrame">
+      <article class="reader" id="article">
+        <h1 id="title" class="editable">
+          Dear Friend,
+          <svg class="edit-icon" viewBox="0 0 24 24" onclick="makeEditable('title')">
+            <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+          </svg>
+        </h1>
+        <p id="para1" class="editable">
+          Wishing you warmth and peace beneath the same stars that guide our hearts.  
+          May every word you read tonight carry a little moonlight of calm to your soul.
+          <svg class="edit-icon" viewBox="0 0 24 24" onclick="makeEditable('para1')">
+            <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+          </svg>
+        </p>
+      </article>
+    </div>
 
     <div class="crud-actions">
       <button class="crud-btn add" id="addSection">+ Add Section</button>
@@ -218,7 +213,6 @@
     const saveBtn = document.getElementById('saveBtn');
     let sectionCount = 1;
 
-    // Add section
     addSection.onclick = () => {
       sectionCount++;
       const h2 = document.createElement("h2");
@@ -240,42 +234,33 @@
       h2.focus();
     };
 
-    // Delete section
     deleteSection.onclick = () => {
       const elements = article.querySelectorAll('.editable');
       if (elements.length > 2) elements[elements.length - 1].remove();
     };
 
-    // Editable logic
     function makeEditable(id) {
       const el = document.getElementById(id);
       if (!el) return;
       el.setAttribute("contenteditable", "true");
       el.focus();
-      el.style.outline = "2px dashed var(--wasabi)";
-      el.style.background = "rgba(255,240,180,0.15)";
+      el.style.outline = "2px dashed rgba(255,255,255,0.3)";
+      el.style.background = "rgba(255,255,255,0.1)";
       const finishEdit = () => {
         el.removeAttribute("contenteditable");
         el.style.outline = "none";
         el.style.background = "transparent";
         el.removeEventListener("blur", finishEdit);
-        el.removeEventListener("keydown", onKeyDown);
       };
-      const onKeyDown = (e) => { if (e.key === "Enter") { e.preventDefault(); el.blur(); } };
       el.addEventListener("blur", finishEdit);
-      el.addEventListener("keydown", onKeyDown);
     }
 
-    // Hide edit icons during export
     async function exportCardImage() {
       try {
-        const articleElement = document.getElementById("article");
-
-        // Hide edit icons
-        const icons = articleElement.querySelectorAll(".edit-icon");
+        const letter = document.getElementById("letterFrame");
+        const icons = letter.querySelectorAll(".edit-icon");
         icons.forEach(icon => icon.style.display = "none");
 
-        // Add faint care watermark
         const watermark = document.createElement("div");
         watermark.innerText = "🤍";
         Object.assign(watermark.style, {
@@ -284,46 +269,36 @@
           left: "50%",
           transform: "translate(-50%, -50%)",
           fontFamily: "Playfair Display",
-          fontSize: "230px",
-          color: "rgba(187,104,48,0.06)",
-          zIndex: "0",
-          pointerEvents: "none"
+          fontSize: "280px",
+          color: "rgba(255,255,255,0.07)",
+          pointerEvents: "none",
+          zIndex: "0"
         });
-        articleElement.appendChild(watermark);
+        letter.appendChild(watermark);
 
-        const canvas = await html2canvas(articleElement, {
-          scale: 3,
-          useCORS: true,
-          backgroundColor: "#F8D794",
-          scrollY: -window.scrollY,
-        });
-
+        const canvas = await html2canvas(letter, { scale: 3, useCORS: true });
         watermark.remove();
         icons.forEach(icon => icon.style.display = "inline");
 
-        const imgData = canvas.toDataURL("image/png");
         const link = document.createElement("a");
-        link.href = imgData;
-        link.download = "Typewriter_Greeting_Card.png";
-        document.body.appendChild(link);
+        link.href = canvas.toDataURL("image/png");
+        link.download = "Celestial_Typewriter_Letter.png";
         link.click();
-        document.body.removeChild(link);
 
-        showToast("💌 Greeting Card Image Downloaded!");
+        showToast("💫 Letter Image Exported!");
       } catch (err) {
-        console.error("Card export failed:", err);
+        console.error("Export failed:", err);
         showToast("❌ Export failed — check console.");
       }
     }
 
-    // Lock editing on Save
     saveBtn.onclick = () => {
       document.querySelectorAll(".editable").forEach(el => {
         el.removeAttribute("contenteditable");
         el.style.outline = "none";
         el.style.background = "transparent";
       });
-      showToast("💾 All edits saved and locked!");
+      showToast("💾 All edits saved!");
     };
 
     exportBtn.onclick = exportCardImage;
