@@ -70,7 +70,7 @@ body {
 @keyframes fadeInSub { to { opacity: 1; } }
 @keyframes splashFadeOut { to { opacity: 0; visibility: hidden; } }
 
-/* Sidebar */
+/* Sidebar (desktop) */
 .sidebar {
   background: var(--paper);
   border-radius: 12px;
@@ -84,6 +84,7 @@ body {
   transform: translateY(15px);
   animation: fadeInUp 1s ease forwards;
   animation-delay: 3s;
+  position: relative;
 }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
@@ -205,7 +206,7 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
 }
 .toast.show { opacity: 1; transform: translateY(0); }
 
-/* 📱 MOBILE OPTIMIZATION */
+/* MOBILE VIEW FIX */
 @media (max-width: 900px) {
   body {
     flex-direction: column;
@@ -214,56 +215,16 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
     gap: 1rem;
   }
 
+  /* Sidebar converts to bottom sheet */
   .sidebar {
     width: 100%;
-    order: 2;
-    padding: 1rem;
-    border-radius: 10px;
-    animation-delay: 3.2s;
-  }
-
-  .workspace {
-    width: 100%;
-    padding: 1.5rem;
-    order: 1;
-    margin-top: 5rem;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .logo {
-    width: 60px;
-    height: 60px;
-    margin-bottom: .6rem;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  .theme-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  button {
-    font-size: .9rem;
-    padding: .5rem;
-  }
-
-  /* Sticky mobile menu for easier access */
-  .sidebar {
     position: fixed;
     bottom: 0;
     left: 0;
     background: var(--paper);
-    width: 100%;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
-    transform: translateY(80%);
+    transform: translateY(85%);
     transition: transform .4s ease;
     z-index: 99;
   }
@@ -271,7 +232,7 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
 
   .toggle-btn {
     position: fixed;
-    bottom: 12px;
+    bottom: 15px;
     right: 20px;
     background: var(--accent);
     color: var(--ink);
@@ -285,6 +246,27 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
     z-index: 100;
     cursor: pointer;
   }
+
+  .workspace {
+    width: 100%;
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .theme-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  button {
+    font-size: .9rem;
+    padding: .5rem;
+  }
 }
 </style>
 </head>
@@ -296,8 +278,10 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
     <div class="splash-sub">Typewriter Workspace Edition</div>
   </div>
 
+  <!-- Mobile Toggle -->
   <button class="toggle-btn" id="toggleBtn">☰</button>
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div>
       <h2>Themes</h2>
@@ -317,6 +301,7 @@ p { font-size: 1.05rem; margin: .8rem 0; color: var(--ink); }
     <div style="text-align:center;opacity:0.6;margin-top:1rem;font-size:.9rem;">Typewriter © 2025</div>
   </aside>
 
+  <!-- Workspace -->
   <section class="workspace" id="workspace">
     <header>
       <div style="display:flex;align-items:center;gap:.8rem;">
@@ -354,7 +339,7 @@ toggleBtn.addEventListener('click', () => {
   sidebar.classList.toggle('active');
 });
 
-/* Theme handling + rest of your logic */
+/* Theme + Content Logic */
 const article = document.getElementById('article');
 const addSection = document.getElementById('addSection');
 const deleteSection = document.getElementById('deleteSection');
@@ -383,6 +368,9 @@ themeGrid.onclick = e => {
   localStorage.setItem('theme-bg', bg);
   localStorage.setItem('theme-accent', accent);
   localStorage.setItem('theme-text', text);
+
+  // auto close on mobile
+  if (window.innerWidth < 900) sidebar.classList.remove('active');
 };
 
 addSection.onclick = () => {
