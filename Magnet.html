@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Disco Metal — Smooth Rhythm</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+:root{
+  --bg: radial-gradient(circle at center, #090c12 0%, #000 100%);
+  --steel: #d0d0d0;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:var(--bg);
+  font-family:"Russo One",sans-serif;
+  overflow:hidden;
+}
+
+/* Container for disco + magnets */
+.splash{
+  position:relative;
+  width:550px;
+  height:550px;
+}
+
+/* --- Disco Ball --- */
+.ball{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:160px;
+  height:160px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:conic-gradient(#ff003c,#00eaff,#fffc00,#ff003c);
+  box-shadow:
+    0 0 40px #ff003c88,
+    0 0 60px #00eaff55,
+    inset 0 0 25px #fff3;
+  animation:spin 6s linear infinite, colorShift 3s linear infinite;
+}
+
+@keyframes spin{
+  0%{transform:translate(-50%,-50%) rotate(0deg);}
+  100%{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+@keyframes colorShift{
+  0%{filter:hue-rotate(0deg);}
+  100%{filter:hue-rotate(360deg);}
+}
+
+/* mirror tile overlay */
+.ball::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,0.18) 0 4px,transparent 4px 8px);
+  mix-blend-mode:overlay;
+}
+
+/* --- Metal Magnets --- */
+.magnet{
+  position:absolute;
+  width:100px;
+  height:100px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#555,#111);
+  border:1px solid #888;
+  border-radius:12px;
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,0.25),
+    inset -2px -2px 5px rgba(0,0,0,0.6),
+    0 0 10px rgba(255,0,60,0.25);
+  color:var(--steel);
+  font-size:18px;
+  transition:top .7s ease, left .7s ease, transform .7s ease, box-shadow .7s ease;
+}
+
+/* initial placement around the ball */
+.magnet:nth-child(2){top:5%; left:50%;}
+.magnet:nth-child(3){top:25%; left:85%;}
+.magnet:nth-child(4){top:75%; left:85%;}
+.magnet:nth-child(5){top:95%; left:50%;}
+.magnet:nth-child(6){top:75%; left:15%;}
+.magnet:nth-child(7){top:25%; left:15%;}
+
+.magnet.active{
+  box-shadow:0 0 35px rgba(255,0,60,0.9);
+  transform:translate(-50%,-50%) scale(1.08);
+}
+</style>
+</head>
+<body>
+<div class="splash">
+  <div class="ball"></div>
+
+  <div class="magnet">Iron</div>
+  <div class="magnet">Thor</div>
+  <div class="magnet">Hulk</div>
+  <div class="magnet">Widow</div>
+  <div class="magnet">Hawkeye</div>
+  <div class="magnet">Vision</div>
+</div>
+
+<script>
+const magnets = Array.from(document.querySelectorAll('.magnet'));
+const swapPairs = [[0,3],[1,4],[2,5]]; // diagonally opposite
+
+function getPositions(nodes) {
+  return nodes.map(node => {
+    const style = getComputedStyle(node);
+    return { top: style.top, left: style.left };
+  });
+}
+
+function applyPositions(nodes, positions) {
+  nodes.forEach((node, i) => {
+    node.style.top = positions[i].top;
+    node.style.left = positions[i].left;
+    node.style.transform = 'translate(-50%,-50%)';
+  });
+}
+
+function swapPositions(current) {
+  const next = current.slice();
+  swapPairs.forEach(([a,b]) => {
+    const temp = next[a];
+    next[a] = next[b];
+    next[b] = temp;
+  });
+  return next;
+}
+
+function flashActive() {
+  magnets.forEach(m => m.classList.add('active'));
+  setTimeout(() => magnets.forEach(m => m.classList.remove('active')), 500);
+}
+
+// sequence drives motion
+const sequence = "RARARAAARRAARAAARRA"; // repeated letters trigger swaps
+let currentPositions = getPositions(magnets);
+let previousChar = "";
+let delay = 1000; // ⏳ slowed down to 1 second per step
+
+sequence.split("").forEach((char, index) => {
+  setTimeout(() => {
+    if (char === previousChar) {
+      currentPositions = swapPositions(currentPositions);
+      applyPositions(magnets, currentPositions);
+      flashActive();
+    }
+    previousChar = char;
+  }, index * delay);
+});
+
+// Loop continuously
+setInterval(() => {
+  let prev = "";
+  sequence.split("").forEach((char, index) => {
+    setTimeout(() => {
+      if (char === prev) {
+        currentPositions = swapPositions(currentPositions);
+        applyPositions(magnets, currentPositions);
+        flashActive();
+      }
+      prev = char;
+    }, index * delay);
+  });
+}, sequence.length * delay + 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Video Sound Editor — VFX Studio Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
+      color: #e2e8f0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2vw;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1400px;
+      padding: 16px 24px;
+      border-bottom: 2px solid rgba(59,130,246,0.3);
+      background: linear-gradient(to right, rgba(37,99,235,0.15), rgba(14,165,233,0.1));
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(59,130,246,0.3);
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(22px, 2vw, 32px);
+      letter-spacing: 1px;
+      color: #60a5fa;
+      margin: 0;
+      text-shadow: 0 0 20px rgba(59,130,246,0.8), 0 0 40px rgba(147,51,234,0.6);
+    }
+
+    .meta {
+      font-size: clamp(10px, 1vw, 14px);
+      color: #94a3b8;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 16px;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #waveform {
+      width: 100%;
+      height: clamp(160px, 25vh, 280px);
+      background: linear-gradient(135deg, rgba(37,99,235,0.25), rgba(147,51,234,0.25));
+      border: 1px solid rgba(59,130,246,0.4);
+      border-radius: 16px;
+      box-shadow: 0 0 35px rgba(59,130,246,0.25);
+      overflow: hidden;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 15px rgba(59,130,246,0.35);
+      font-size: clamp(12px, 1vw, 14px);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 25px rgba(147,51,234,0.45);
+    }
+
+    button:disabled {
+      background: rgba(148,163,184,0.3);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    input[type=file] {
+      padding: 10px;
+      border-radius: 6px;
+      background: rgba(30,41,59,0.7);
+      border: 1px solid rgba(148,163,184,0.3);
+      color: #cbd5e1;
+      width: clamp(180px, 25%, 240px);
+    }
+
+    input[type=range] {
+      width: clamp(140px, 15vw, 260px);
+      accent-color: #60a5fa;
+    }
+
+    label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(30,41,59,0.6);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: clamp(12px, 1vw, 14px);
+      color: #93c5fd;
+      border: 1px solid rgba(59,130,246,0.3);
+      box-shadow: inset 0 0 10px rgba(59,130,246,0.1);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(37,99,235,0.25);
+      border-radius: 999px;
+      font-size: clamp(11px, 1vw, 13px);
+      font-weight: 600;
+      color: #93c5fd;
+      text-shadow: 0 0 8px rgba(147,197,253,0.6);
+    }
+
+    .log {
+      margin-top: 20px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(59,130,246,0.3);
+      padding: 14px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: clamp(11px, 1vw, 13px);
+      color: #e2e8f0;
+      box-shadow: 0 0 20px rgba(37,99,235,0.25);
+      width: 100%;
+    }
+
+    video {
+      border-radius: 12px;
+      width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      box-shadow: 0 0 35px rgba(37,99,235,0.35);
+    }
+
+    .glow {
+      text-shadow: 0 0 25px rgba(59,130,246,0.8), 0 0 45px rgba(147,51,234,0.6);
+    }
+
+    @media (max-width: 768px) {
+      header { flex-direction: column; text-align: center; gap: 8px; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="glow">VFX Sound Lab</h1>
+    <div class="meta">Cinematic Manual Audio Editing • Fullscreen Experience</div>
+  </header>
+
+  <div class="container">
+    <p style="color:#93c5fd;font-size:clamp(14px,1.2vw,16px);text-align:center;">
+      Upload a video, visualize its waveform, trim or enhance audio with precision, and create a professional cinematic sound experience.
+    </p>
+
+    <div class="row">
+      <input id="videoFile" type="file" accept="video/*" />
+      <button id="loadBtn">Load & Extract</button>
+      <button id="exportAudioBtn" disabled>Export Audio</button>
+      <button id="mergeBtn" disabled>Merge → Video</button>
+    </div>
+
+    <video id="video" controls></video>
+    <div id="waveform"></div>
+
+    <div class="controls">
+      <label>Start <input type="range" id="startRange" min="0" max="1" step="0.001" value="0"></label>
+      <label>End <input type="range" id="endRange" min="0" max="1" step="0.001" value="1"></label>
+      <label>Gain <input type="range" id="gainRange" min="0" max="3" step="0.01" value="1"></label>
+      <button id="playSelection" disabled>Play</button>
+      <button id="stopBtn">Stop</button>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap">
+      <div class="pill" id="durationPill">Duration: —</div>
+      <div class="pill" id="cursorPill">Cursor: —</div>
+    </div>
+
+    <div class="log" id="log">[ System Ready ] Awaiting input...</div>
+  </div>
+
+  <!-- ✅ Load local JS libraries -->
+  <script src="./libs/wavesurfer.min.js"></script>
+  <script src="./libs/wavesurfer.regions.min.js"></script>
+  <script src="./libs/ffmpeg.min.js"></script>
+  <script>
+  const videoFileInput = document.getElementById('videoFile');
+  const loadBtn = document.getElementById('loadBtn');
+  const exportAudioBtn = document.getElementById('exportAudioBtn');
+  const mergeBtn = document.getElementById('mergeBtn');
+  const playSelectionBtn = document.getElementById('playSelection');
+  const stopBtn = document.getElementById('stopBtn');
+  const video = document.getElementById('video');
+  const logEl = document.getElementById('log');
+  const durationPill = document.getElementById('durationPill');
+  const cursorPill = document.getElementById('cursorPill');
+
+  let wavesurfer, ffmpeg, audioBlob;
+
+  const log = (msg) => {
+    console.log(msg);
+    logEl.textContent = `[Log] ${msg}`;
+  };
+
+  // ✅ Initialize Wavesurfer
+  function initWaveform(arrayBuffer) {
+    if (wavesurfer) {
+      wavesurfer.destroy();
+    }
+
+    wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: '#60a5fa',
+      progressColor: '#a78bfa',
+      height: 180,
+      responsive: true,
+      plugins: [WaveSurfer.Regions.create()]
+    });
+
+    wavesurfer.loadBlob(new Blob([arrayBuffer]));
+
+    wavesurfer.on('ready', () => {
+      durationPill.textContent = `Duration: ${wavesurfer.getDuration().toFixed(2)}s`;
+      playSelectionBtn.disabled = false;
+      exportAudioBtn.disabled = false;
+      mergeBtn.disabled = false;
+      log('Waveform ready.');
+    });
+
+    wavesurfer.on('audioprocess', () => {
+      cursorPill.textContent = `Cursor: ${wavesurfer.getCurrentTime().toFixed(2)}s`;
+    });
+
+    stopBtn.onclick = () => wavesurfer.stop();
+    playSelectionBtn.onclick = () => wavesurfer.playPause();
+  }
+
+  // ✅ Load & Extract audio using ffmpeg.wasm
+  loadBtn.onclick = async () => {
+    const file = videoFileInput.files[0];
+    if (!file) return alert('Please select a video first.');
+
+    log('Initializing FFmpeg...');
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    ffmpeg = createFFmpeg({ log: true });
+    await ffmpeg.load();
+
+    log('Extracting audio...');
+    const fileName = 'input.mp4';
+    ffmpeg.FS('writeFile', fileName, await fetchFile(file));
+
+    // Extract to .mp3 (can also do .wav)
+    await ffmpeg.run('-i', fileName, '-vn', '-acodec', 'mp3', 'output.mp3');
+    const data = ffmpeg.FS('readFile', 'output.mp3');
+
+    audioBlob = new Blob([data.buffer], { type: 'audio/mp3' });
+    initWaveform(data.buffer);
+
+    video.src = URL.createObjectURL(file);
+    log('Audio extracted successfully.');
+  };
+
+  // ✅ Export audio (download)
+  exportAudioBtn.onclick = () => {
+    if (!audioBlob) return alert('No audio to export.');
+    const url = URL.createObjectURL(audioBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'extracted_audio.mp3';
+    a.click();
+    log('Exported audio downloaded.');
+  };
+
+  // ✅ Merge audio back into video
+  mergeBtn.onclick = async () => {
+    if (!audioBlob) return alert('No audio to merge.');
+
+    log('Merging edited audio into video...');
+    const videoFile = videoFileInput.files[0];
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    if (!ffmpeg) {
+      ffmpeg = createFFmpeg({ log: true });
+      await ffmpeg.load();
+    }
+
+    ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
+    ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audioBlob));
+
+    await ffmpeg.run('-i', 'input.mp4', '-i', 'audio.mp3', '-c:v', 'copy', '-map', '0:v:0', '-map', '1:a:0', 'merged.mp4');
+    const mergedData = ffmpeg.FS('readFile', 'merged.mp4');
+
+    const mergedBlob = new Blob([mergedData.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(mergedBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'merged_video.mp4';
+    a.click();
+
+    log('Merged video downloaded.');
+  };
+</script>
+
+</body>
+</html>
